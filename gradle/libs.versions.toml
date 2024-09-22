@@ -8,6 +8,7 @@ material = "1.12.0"
 activity = "1.8.0"
 constraintlayout = "2.1.4"
 retrofit = "2.9.0"
+glide = "4.15.1"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -19,6 +20,9 @@ activity = { group = "androidx.activity", name = "activity", version.ref = "acti
 constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "retrofit" }
+glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
+
+
 
 
 [plugins]
