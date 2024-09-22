@@ -1,6 +1,7 @@
 package com.example.taazakhabar;
 
 import android.content.Context;
+import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,16 @@ public class RecAdapter extends RecyclerView.Adapter<RecAdapter.NewsViewHolder> 
         holder.descriptionTextView.setText(article.getDescription());
         // Load image with Glide or Picasso
         Glide.with(context).load(article.getUrlToImage()).into(holder.imageThumbnail);
+
+        //NEWS ITEM CLICK EVENT
+        holder.itemView.setOnClickListener(v -> {
+            Intent intent = new Intent(context, News_Details.class);
+            intent.putExtra("title", article.getTitle());
+            intent.putExtra("thumbnail", article.getUrlToImage());
+            intent.putExtra("content", article.getContent());
+            intent.putExtra("url", article.getUrl());
+            context.startActivity(intent);
+        });
     }
 
     @Override
