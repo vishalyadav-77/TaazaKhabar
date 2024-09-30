@@ -8,6 +8,7 @@ public interface MyNewsApi {
     @GET("top-headlines")
     Call<Mynewsmodel> getTopHeadlines(
             @Query("country") String country,
+            @Query("category") String category,  // Optional category
             @Query("apiKey") String apiKey
     );
 }

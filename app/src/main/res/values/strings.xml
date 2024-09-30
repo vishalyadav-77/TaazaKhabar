@@ -1,3 +1,12 @@
 <resources>
     <string name="app_name">Taaza Khabar</string>
+    <string-array name="news_categories">
+        <item>All</item>
+        <item>Business</item>
+        <item>Sports</item>
+        <item>Technology</item>
+        <item>Health</item>
+        <item>Politics</item>
+        <item>Entertainment</item>
+    </string-array>
 </resources>
