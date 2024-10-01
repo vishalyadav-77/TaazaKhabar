@@ -11,4 +11,10 @@ public interface MyNewsApi {
             @Query("category") String category,  // Optional category
             @Query("apiKey") String apiKey
     );
+
+    @GET("everything")
+    Call<Mynewsmodel> getEverything(
+            @Query("q") String query,
+            @Query("apiKey") String apiKey
+    );
 }
