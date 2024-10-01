@@ -41,9 +41,6 @@ public class RecAdapter extends RecyclerView.Adapter<RecAdapter.NewsViewHolder> 
         //NEWS ITEM CLICK EVENT
         holder.itemView.setOnClickListener(v -> {
             Intent intent = new Intent(context, News_Details.class);
-            intent.putExtra("title", article.getTitle());
-            intent.putExtra("thumbnail", article.getUrlToImage());
-            intent.putExtra("content", article.getContent());
             intent.putExtra("url", article.getUrl());
             context.startActivity(intent);
         });
@@ -51,7 +48,6 @@ public class RecAdapter extends RecyclerView.Adapter<RecAdapter.NewsViewHolder> 
 
     @Override
     public int getItemCount() {
-
         return articles.size();
     }
 
