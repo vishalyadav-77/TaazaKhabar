@@ -42,4 +42,7 @@ dependencies {
     implementation(libs.glide)
     implementation(libs.swiperefreshlayout)
     implementation(libs.paging)
+    implementation(libs.rooms)
+    annotationProcessor(libs.roomcompiler)
+
 }

@@ -141,4 +141,45 @@ public class MainActivity extends AppCompatActivity {
             }
         }); 
     }
+    private void saveArticlesToLocalDb(List<Article> articles) {
+        new Thread(() -> {
+            My_database db = My_database.getDatabase(this);
+            List<MyNewsArticle> myNewsArticles = new ArrayList<>();
+            for (Article article : articles) {
+                MyNewsArticle myNewsArticle = new MyNewsArticle();
+                myNewsArticle.setAuthor(article.getAuthor());
+                myNewsArticle.setDescription(article.getDescription());
+                myNewsArticle.setTitle(article.getTitle());
+                myNewsArticle.setUrl(article.getUrl());
+                myNewsArticle.setUrlToImage(article.getUrlToImage());
+                myNewsArticle.setPublishedAt(article.getPublishedAt());
+                myNewsArticle.setContent(article.getContent());
+                myNewsArticles.add(myNewsArticle);
+            }
+            db.newsArticleDao().insertArticle(myNewsArticles);
+            Log.d("Database", "Inserting articles into the database");
+        }).start();
+    }
+    private void loadArticlesFromLocalDb() {
+        new Thread(() -> {
+            My_database db = My_database.getDatabase(this);
+            List<MyNewsArticle> cachedArticles = db.newsArticleDao().getAllArticles();
+            runOnUiThread(() -> recAdapter.updateNews(convertToArticleList(cachedArticles)));
+        }).start();
+    }
+    private List<Article> convertToArticleList(List<MyNewsArticle> myNewsArticles) {
+        List<Article> articles = new ArrayList<>();
+        for (MyNewsArticle myNewsArticle : myNewsArticles) {
+            Article article = new Article();
+            article.setAuthor(myNewsArticle.getAuthor());
+            article.setDescription(myNewsArticle.getDescription());
+            article.setTitle(myNewsArticle.getTitle());
+            article.setUrl(myNewsArticle.getUrl());
+            article.setUrlToImage(myNewsArticle.getUrlToImage());
+            article.setPublishedAt(myNewsArticle.getPublishedAt());
+            article.setContent(myNewsArticle.getContent());
+            articles.add(article);
+        }
+        return articles;
+    }
 }

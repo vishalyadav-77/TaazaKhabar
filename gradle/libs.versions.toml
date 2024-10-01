@@ -11,6 +11,7 @@ retrofit = "2.9.0"
 glide = "4.15.1"
 swiperefreshlayout = "1.1.0"
 paging = "3.1.1"
+room = "2.5.2"
 
 [libraries]
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -25,6 +26,8 @@ retrofit-gson = { group = "com.squareup.retrofit2", name = "converter-gson", ver
 glide = { group = "com.github.bumptech.glide", name = "glide", version.ref = "glide" }
 swiperefreshlayout = { group = "androidx.swiperefreshlayout", name = "swiperefreshlayout", version.ref = "swiperefreshlayout" }
 paging = { group = "androidx.paging", name = "paging-runtime", version.ref = "paging"}
+rooms = { group = "androidx.room", name = "room-runtime", version.ref = "room" }
+roomcompiler = { group = "androidx.room", name = "room-compiler", version.ref = "room" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
