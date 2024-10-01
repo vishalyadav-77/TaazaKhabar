@@ -17,6 +17,7 @@ import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +28,7 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerView;
     private RecAdapter recAdapter;
+    private SwipeRefreshLayout swipe;
     private List<Article> articleList = new ArrayList<>();
 
     @Override
@@ -47,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setAdapter(recAdapter);
         Spinner myspinner= findViewById(R.id.spinner_category);
         SearchView search_btn=findViewById(R.id.search_button);
-        ProgressBar progressBar = findViewById(R.id.progressBar);
+        swipe=findViewById(R.id.swipeRefreshLayout);
 
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
                 R.array.news_categories, android.R.layout.simple_spinner_item);
@@ -59,9 +61,9 @@ public class MainActivity extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String category = parent.getItemAtPosition(position).toString();
                 if (category.equals("All")) {
-                    fetchNews(null);  // Pass null to fetch all news
+                    fetchNews(null,null);  // Pass null to fetch all news
                 } else {
-                    fetchNews(category.toLowerCase());}
+                    fetchNews(category.toLowerCase(),null);}
             }
 
             @Override
@@ -72,34 +74,47 @@ public class MainActivity extends AppCompatActivity {
         });
 
         CharSequence query = search_btn.getQuery();
-        query.toString();
         search_btn.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+                Log.d("mylog", "Query submitted: " + query);
+                fetchNews(null, query);
+                search_btn.clearFocus();
                 return true;
+
             }
-
-
             @Override
             public boolean onQueryTextChange(String newText) {
                 return false;
             }
         });
 
-        fetchNews(null);
+        swipe.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                fetchNews(null,null);
+            }
+        });
+
+        fetchNews(null, null);
 
     }
 
-    private void fetchNews(String category) {
+    private void fetchNews(String category, String query) {
         ProgressBar progressBar=findViewById(R.id.progressBar);
         progressBar.setVisibility(View.VISIBLE);
         recyclerView.setVisibility(View.GONE);
         MyNewsApi service = MyRetrofitClient.getInstance().create(MyNewsApi.class);
         Call<Mynewsmodel> call;
-        if (category == null) {
-            // Fetch all news without a category filter
+        if (category == null && query==null) {
+            // Fetch all news without a category filter or query
             call = service.getTopHeadlines("us", null, "ff1e7c989f2d43ae986844d54210275a");
-        } else {
+        }
+        else if (category== null || query!=null) {
+            //get everything to search
+            call = service.getEverything(query, "ff1e7c989f2d43ae986844d54210275a");
+        }
+        else {
             // Fetch filtered news by category
             call = service.getTopHeadlines("us", category, "ff1e7c989f2d43ae986844d54210275a");
         }
@@ -108,6 +123,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<Mynewsmodel> call, Response<Mynewsmodel> response) {
                 progressBar.setVisibility(View.GONE);
+                swipe.setRefreshing(false);
                 recyclerView.setVisibility(View.VISIBLE);
                 if (response.isSuccessful()) {
                     List<Article> articles = response.body().getArticles();
@@ -115,16 +131,12 @@ public class MainActivity extends AppCompatActivity {
                     Log.d("mylogs", "response working: " + articles.size());
                 } else {
                     Log.e("mylogs", "Response not successful");
-                    try {
-                        Log.e("mylogs", "Error Body: " + response.errorBody().string());
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
                 }
             }
 
             @Override
             public void onFailure(Call<Mynewsmodel> call, Throwable t) {
+                swipe.setRefreshing(false);
                 Toast.makeText(MainActivity.this, "Failed to fetch news, maybe check your network", Toast.LENGTH_SHORT).show();
             }
         }); 
