@@ -2,9 +2,11 @@ package com.example.taazakhabar;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.ProgressBar;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -25,6 +27,7 @@ public class News_Details extends AppCompatActivity {
             return insets;
         });
         WebView webView = findViewById(R.id.webView);
+        ProgressBar load = findViewById(R.id.loading);
 
         Intent intent = getIntent();
         String url= intent.getStringExtra("url");
@@ -32,7 +35,20 @@ public class News_Details extends AppCompatActivity {
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
 
-        webView.setWebViewClient(new WebViewClient());
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageStarted(WebView view, String url, android.graphics.Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+                // Show ProgressBar when the page starts loading
+                load.setVisibility(View.VISIBLE);
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                // Hide ProgressBar when the page finishes loading
+                load.setVisibility(View.GONE);
+            }
+        });
         webView.loadUrl(url);
     }
 }
